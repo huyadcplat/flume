@@ -123,6 +123,7 @@ public class SyslogParser {
     // now parse timestamp (handle different varieties)
 
     long ts;
+    long tsHighAccuracy;
     String tsString;
     char dateStartChar = msg.charAt(curPos);
 
@@ -132,6 +133,7 @@ public class SyslogParser {
       if (dateStartChar == '-') {
         tsString = Character.toString(dateStartChar);
         ts = System.currentTimeMillis();
+        tsHighAccuracy=ts*1000000;
         if (msgLen <= curPos + 2) {
           throw new IllegalArgumentException(
               "bad syslog format (missing hostname)");
@@ -146,7 +148,7 @@ public class SyslogParser {
         tsString = msg.substring(curPos, curPos + RFC3164_LEN);
         ts = parseRfc3164Time(tsString);
         curPos += RFC3164_LEN + 1;
-
+        tsHighAccuracy=ts*1000000;
       // rfc 5424 timestamp
       } else {
         int nextSpace = msg.indexOf(' ', curPos);
@@ -154,7 +156,9 @@ public class SyslogParser {
           throw new IllegalArgumentException("bad timestamp format");
         }
         tsString = msg.substring(curPos, nextSpace);
-        ts = parseRfc5424Date(tsString);
+        long[] time = parseRfc5424Date(tsString);
+        ts=time[0];
+        tsHighAccuracy=time[1];
         curPos = nextSpace + 1;
       }
 
@@ -163,6 +167,7 @@ public class SyslogParser {
     }
 
     headers.put("timestamp", String.valueOf(ts));
+    headers.put("timestamp-high", String.valueOf(tsHighAccuracy));
 
     // parse out hostname
     int nextSpace = msg.indexOf(' ', curPos);
@@ -196,9 +201,10 @@ public class SyslogParser {
    * @param msg
    * @return Typical (for Java) milliseconds since UNIX epoch
    */
-  protected long parseRfc5424Date(String msg) {
+  protected long[] parseRfc5424Date(String msg) {
 
     Long ts = null;
+    long tsHighAccuracy=0;
     int curPos = 0;
 
     int msgLen = msg.length();
@@ -208,6 +214,7 @@ public class SyslogParser {
 
     try {
       ts = timestampCache.get(timestampPrefix);
+      tsHighAccuracy=ts*1000000;
     } catch (ExecutionException ex) {
       throw new IllegalArgumentException("bad timestamp format", ex);
     }
@@ -240,12 +247,15 @@ public class SyslogParser {
       final int fractionalPositions = endMillisPos - (curPos + 1);
       if (fractionalPositions > 0) {
         long milliseconds = Long.parseLong(msg.substring(curPos + 1, endMillisPos));
+        long oriMilliseconds=milliseconds;
         if (fractionalPositions > 3) {
           milliseconds /= Math.pow(10, (fractionalPositions - 3));
         } else if (fractionalPositions < 3) {
           milliseconds *= Math.pow(10, (3 - fractionalPositions));
         }
         ts += milliseconds;
+        oriMilliseconds*=Math.pow(10, 9-fractionalPositions);
+        tsHighAccuracy+= oriMilliseconds;
       } else {
         throw new IllegalArgumentException(
             "Bad format: Invalid timestamp (fractional portion): " + msg);
@@ -293,7 +303,7 @@ public class SyslogParser {
     }
 
 
-    return ts;
+    return new long[]{ts,tsHighAccuracy};
   }
 
   /**

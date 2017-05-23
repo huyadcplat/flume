@@ -206,6 +206,7 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
 
         sinkCounter.addToEventDrainAttemptCount(count);
         client.execute();
+        logger.debug("index succ,count {}",count);
       }
       txn.commit();
       sinkCounter.addToEventDrainSuccessCount(count);

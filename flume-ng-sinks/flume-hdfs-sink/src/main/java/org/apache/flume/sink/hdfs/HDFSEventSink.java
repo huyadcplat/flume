@@ -34,6 +34,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import org.apache.flume.Channel;
 import org.apache.flume.Clock;
 import org.apache.flume.Context;
@@ -52,6 +53,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.SequenceFile.CompressionType;
 import org.apache.hadoop.io.compress.CompressionCodec;
 import org.apache.hadoop.io.compress.CompressionCodecFactory;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -352,6 +354,7 @@ public class HDFSEventSink extends AbstractSink implements Configurable {
    * This method is not thread safe.
    */
   public Status process() throws EventDeliveryException {
+	  LOG.debug("process...");
     Channel channel = getChannel();
     Transaction transaction = channel.getTransaction();
     transaction.begin();
@@ -431,7 +434,9 @@ public class HDFSEventSink extends AbstractSink implements Configurable {
       }
 
       transaction.commit();
-
+      if (txnEventCount != 0) {
+    	  LOG.debug("write hdfs succ,count {}",txnEventCount);
+      }
       if (txnEventCount < 1) {
         return Status.BACKOFF;
       } else {

@@ -317,7 +317,7 @@ public class NettyAvroRpcClient extends AbstractRpcClient implements RpcClient {
 
   private void appendBatch(List<Event> events, long timeout, TimeUnit tu)
       throws EventDeliveryException {
-
+    logger.debug("append event size:"+events.size());
     assertReady();
 
     Iterator<Event> iter = events.iterator();
@@ -390,6 +390,7 @@ public class NettyAvroRpcClient extends AbstractRpcClient implements RpcClient {
         throw new EventDeliveryException(this + ": Avro RPC call returned " +
             "Status: " + status);
       }
+      logger.debug("append event succ!");
     } catch (CancellationException ex) {
       throw new EventDeliveryException(this + ": RPC future was cancelled", ex);
     } catch (ExecutionException ex) {

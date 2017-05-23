@@ -170,6 +170,8 @@ public class FailoverSinkProcessor extends AbstractSinkProcessor {
                   cur.getSink().getName());
         } else {
           // if it's a backoff it needn't be penalized.
+        	logger.debug("Sink {} was failed becase status {}",
+                    cur.getSink().getName(),s);
           failedSinks.add(cur);
         }
         return s;
@@ -183,6 +185,8 @@ public class FailoverSinkProcessor extends AbstractSinkProcessor {
     while (activeSink != null) {
       try {
         ret = activeSink.process();
+        logger.debug("Sink {} was succ, status {}",
+        		activeSink.getName(),ret);
         return ret;
       } catch (Exception e) {
         logger.warn("Sink {} failed and has been sent to failover list",

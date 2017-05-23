@@ -22,6 +22,7 @@ import org.apache.flume.Event;
 import org.apache.flume.EventDeliveryException;
 import org.apache.flume.sink.elasticsearch.ElasticSearchEventSerializer;
 import org.apache.flume.sink.elasticsearch.IndexNameBuilder;
+import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -37,7 +38,9 @@ import java.io.IOException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TestElasticSearchTransportClient {
@@ -69,7 +72,7 @@ public class TestElasticSearchTransportClient {
     BytesStream bytesStream = mock(BytesStream.class);
 
     when(nameBuilder.getIndexName(any(Event.class))).thenReturn("foo_index");
-    when(bytesReference.toBytes()).thenReturn("{\"body\":\"test\"}".getBytes());
+    when(bytesReference.toBytesRef()).thenReturn(new BytesRef("{\"body\":\"test\"}".getBytes()));
     when(bytesStream.bytes()).thenReturn(bytesReference);
     when(serializer.getContentBuilder(any(Event.class)))
         .thenReturn(bytesStream);

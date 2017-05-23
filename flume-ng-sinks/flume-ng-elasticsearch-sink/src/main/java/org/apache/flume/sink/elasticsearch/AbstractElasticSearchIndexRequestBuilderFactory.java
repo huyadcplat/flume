@@ -18,8 +18,7 @@
  */
 package org.apache.flume.sink.elasticsearch;
 
-import java.io.IOException;
-
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
@@ -30,7 +29,7 @@ import org.apache.flume.formatter.output.BucketPath;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.client.Client;
 
-import com.google.common.annotations.VisibleForTesting;
+import java.io.IOException;
 
 /**
  * Abstract base class for custom implementations of

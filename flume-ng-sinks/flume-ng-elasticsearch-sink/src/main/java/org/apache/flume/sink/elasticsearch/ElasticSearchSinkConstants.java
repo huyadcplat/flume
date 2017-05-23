@@ -94,6 +94,11 @@ public class ElasticSearchSinkConstants {
   public static final String CLIENT_PREFIX = CLIENT_TYPE + ".";
 
   /**
+   * Set to true to enable compression (LZF) between all nodes
+   */
+  public static final String COMPRESS = "compress";
+
+  /**
    * DEFAULTS USED BY THE SINK
    */
 
@@ -103,6 +108,7 @@ public class ElasticSearchSinkConstants {
   public static final String DEFAULT_INDEX_TYPE = "log";
   public static final String DEFAULT_CLUSTER_NAME = "elasticsearch";
   public static final String DEFAULT_CLIENT_TYPE = "transport";
+  public static final String DEFAULT_COMPRESS = "true";
   public static final String TTL_REGEX = "^(\\d+)(\\D*)";
   public static final String DEFAULT_SERIALIZER_CLASS = "org.apache.flume." +
           "sink.elasticsearch.ElasticSearchLogStashEventSerializer";

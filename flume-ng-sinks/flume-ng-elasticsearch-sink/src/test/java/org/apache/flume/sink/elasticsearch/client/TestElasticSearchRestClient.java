@@ -33,7 +33,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.util.EntityUtils;
-import org.elasticsearch.common.bytes.BytesArray;
+import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.io.BytesStream;
 import org.junit.Before;
@@ -91,7 +91,7 @@ public class TestElasticSearchRestClient {
     BytesStream bytesStream = mock(BytesStream.class);
 
     when(nameBuilder.getIndexName(any(Event.class))).thenReturn(INDEX_NAME);
-    when(bytesReference.toBytesArray()).thenReturn(new BytesArray(MESSAGE_CONTENT));
+    when(bytesReference.toBytesRef()).thenReturn(new BytesRef(MESSAGE_CONTENT));
     when(bytesStream.bytes()).thenReturn(bytesReference);
     when(serializer.getContentBuilder(any(Event.class))).thenReturn(bytesStream);
     fixture = new ElasticSearchRestClient(HOSTS, serializer, httpClient);

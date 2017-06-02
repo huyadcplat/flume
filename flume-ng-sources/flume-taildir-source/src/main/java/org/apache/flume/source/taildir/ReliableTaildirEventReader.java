@@ -104,8 +104,11 @@ public class ReliableTaildirEventReader implements ReliableEventReader {
     String path;
     FileReader fr = null;
     JsonReader jr = null;
+    if((new File(filePath)).length()==0){
+    	return;
+    }
     try {
-      fr = new FileReader(filePath);
+      fr = new FileReader(filePath);      
       jr = new JsonReader(fr);
       jr.beginArray();
       while (jr.hasNext()) {

@@ -19,6 +19,7 @@
 package org.apache.flume.sink.elasticsearch;
 
 import com.google.common.collect.Maps;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.flume.Event;
 import org.apache.flume.event.SimpleEvent;
@@ -36,7 +37,7 @@ import java.util.Map;
  */
 final class TimestampedEvent extends SimpleEvent {
 
-  private final long timestamp;
+  private long timestamp;
 
   TimestampedEvent(Event base) {
     setBody(base.getBody());
@@ -49,7 +50,11 @@ final class TimestampedEvent extends SimpleEvent {
       this.timestamp = DateTimeUtils.currentTimeMillis();
       headers.put("timestamp", String.valueOf(timestamp ));
     } else {
-      this.timestamp = Long.valueOf(timestampString);
+	     try {
+			this.timestamp = Long.valueOf(timestampString);
+		} catch (Exception e) {
+			this.timestamp=DateTimeUtils.currentTimeMillis();
+		}
     }
     setHeaders(headers);
   }

@@ -188,7 +188,7 @@ public class ElasticSearchSink extends AbstractSink implements Configurable {
         if (event == null) {
           break;
         }
-        String realIndexType = BucketPath.escapeString(indexType, event.getHeaders());
+        String realIndexType = BucketPath.escapeString(indexType, event.getHeaders()).toLowerCase();
         client.addEvent(event, indexNameBuilder, realIndexType, ttlMs);
       }
 

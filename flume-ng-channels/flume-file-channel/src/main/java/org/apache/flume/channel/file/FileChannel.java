@@ -486,6 +486,7 @@ public class FileChannel extends BasicChannelSemantics {
 
     @Override
     protected void doPut(Event event) throws InterruptedException {
+    	LOG.debug("file channel recive event,header {},body {},id {}",new Object[]{event.getHeaders(),event.getBody(),event.hashCode()});
       channelCounter.incrementEventPutAttemptCount();
       if (putList.remainingCapacity() == 0) {
         throw new ChannelException("Put queue for FileBackedTransaction " +
@@ -556,6 +557,7 @@ public class FileChannel extends BasicChannelSemantics {
                       + channelNameDescriptor);
               log.take(transactionID, ptr); // write take to disk
               Event event = log.get(ptr);
+              LOG.debug("take event from file channel,header:{},body:{}",event.getHeaders(),event.getBody());
               return event;
             } catch (IOException e) {
               channelCounter.incrementEventTakeErrorCount();

@@ -27,12 +27,12 @@ public class SimpleIndexNameBuilder implements IndexNameBuilder {
 
   @Override
   public String getIndexName(Event event) {
-    return BucketPath.escapeString(indexName, event.getHeaders());
+    return BucketPath.escapeString(indexName, event.getHeaders()).toLowerCase();
   }
 
   @Override
   public String getIndexPrefix(Event event) {
-    return BucketPath.escapeString(indexName, event.getHeaders());
+    return BucketPath.escapeString(indexName, event.getHeaders()).toLowerCase();
   }
 
   @Override

@@ -24,6 +24,8 @@ import org.apache.flume.Event;
 import org.apache.flume.conf.ComponentConfiguration;
 import org.elasticsearch.common.collect.MapBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
@@ -71,20 +73,24 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
  */
 public class ElasticSearchLogStashEventSerializer implements
     ElasticSearchEventSerializer {
-
+	private static final Logger LOG=LoggerFactory.getLogger(ElasticSearchLogStashEventSerializer.class);
   @Override
   public XContentBuilder getContentBuilder(Event event) throws IOException {
     XContentBuilder builder = jsonBuilder().startObject();
     appendBody(builder, event);
     appendHeaders(builder, event);
     builder.endObject();
+    if(LOG.isDebugEnabled()){
+    	LOG.debug("es index source:{}",builder.string());
+    }
     return builder;
   }
 
   private void appendBody(XContentBuilder builder, Event event)
       throws IOException {
     byte[] body = event.getBody();
-    ContentBuilderUtil.appendField(builder, "@message", body);
+//    ContentBuilderUtil.appendField(builder, "@message", body);
+    builder.field("@message", new String(body));
   }
 
   private void appendHeaders(XContentBuilder builder, Event event)

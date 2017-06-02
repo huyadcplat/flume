@@ -185,6 +185,9 @@ public class ElasticSearchTransportClient implements ElasticSearchClient {
   public void execute() throws Exception {
     try {
       BulkResponse bulkResponse = bulkRequestBuilder.execute().actionGet();
+      if(logger.isDebugEnabled()){
+    	  
+      }
       if (bulkResponse.hasFailures()) {
         throw new EventDeliveryException(bulkResponse.buildFailureMessage());
       }

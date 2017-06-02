@@ -61,14 +61,14 @@ public class TimeBasedIndexNameBuilder implements
   public String getIndexName(Event event) {
     TimestampedEvent timestampedEvent = new TimestampedEvent(event);
     long timestamp = timestampedEvent.getTimestamp();
-    String realIndexPrefix = BucketPath.escapeString(indexPrefix, event.getHeaders());
+    String realIndexPrefix = BucketPath.escapeString(indexPrefix, event.getHeaders()).toLowerCase();
     return new StringBuilder(realIndexPrefix).append('-')
       .append(fastDateFormat.format(timestamp)).toString();
   }
   
   @Override
   public String getIndexPrefix(Event event) {
-    return BucketPath.escapeString(indexPrefix, event.getHeaders());
+    return BucketPath.escapeString(indexPrefix, event.getHeaders()).toLowerCase();
   }
 
   @Override
